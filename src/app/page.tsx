@@ -1,159 +1,321 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Land Your Web — Websites for Professional Practices",
-  description: "We build and manage websites for dental, legal, medical, and financial practices. 10-day delivery. Ongoing management included.",
-};
+/* ===== CANVAS PARTICLE FIELD ===== */
+function ParticleField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let particles: { x: number; y: number; vx: number; vy: number; size: number; opacity: number }[] = [];
+
+    function resize() {
+      canvas!.width = window.innerWidth;
+      canvas!.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      const count = Math.floor((window.innerWidth * window.innerHeight) / 15000);
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas!.width,
+        y: Math.random() * canvas!.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.4 + 0.1,
+      }));
+    }
+
+    function draw() {
+      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas!.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas!.height) p.vy *= -1;
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(99, 102, 241, ${p.opacity})`;
+        ctx!.fill();
+      });
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx!.beginPath();
+            ctx!.moveTo(particles[i].x, particles[i].y);
+            ctx!.lineTo(particles[j].x, particles[j].y);
+            ctx!.strokeStyle = `rgba(99, 102, 241, ${0.06 * (1 - dist / 120)})`;
+            ctx!.lineWidth = 0.5;
+            ctx!.stroke();
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw);
+    }
+
+    resize();
+    createParticles();
+    draw();
+    window.addEventListener("resize", () => { resize(); createParticles(); });
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />;
+}
+
+/* ===== COUNTER ANIMATION ===== */
+function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const triggered = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !triggered.current) {
+          triggered.current = true;
+          const duration = 2000;
+          const start = performance.now();
+          function tick(now: number) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * value));
+            if (progress < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return <span ref={ref} className="counter">{count}{suffix}</span>;
+}
+
+/* ===== SCROLL REVEAL ===== */
+function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`reveal ${delay === 1 ? "reveal-delay-1" : delay === 2 ? "reveal-delay-2" : delay === 3 ? "reveal-delay-3" : ""} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+/* ===== HORIZONTAL SCROLL SECTION ===== */
+function HScroll({ items }: { items: { title: string; desc: string; stat: string }[] }) {
+  return (
+    <div className="hscroll-container gap-6 px-6 pb-8">
+      {items.map((item) => (
+        <div key={item.title} className="hscroll-item glass rounded-2xl p-8 flex flex-col justify-between min-h-[300px] hover:border-indigo-500/30 transition-colors duration-500">
+          <div>
+            <p className="text-4xl font-light text-white mb-4">{item.stat}</p>
+            <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
+            <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ===== MAIN PAGE ===== */
 export default function HomePage() {
   return (
-    <div className="bg-white">
-      {/* Hero — with geometric background */}
-      <section className="geo-hero relative overflow-hidden">
-        {/* Background geometric pattern */}
-        <div className="absolute inset-0 geo-grid opacity-50" />
+    <div className="relative">
+      {/* Hero */}
+      <section className="hero-glow relative min-h-screen flex items-center overflow-hidden">
+        <ParticleField />
+        <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-24 w-full">
+          <div className="max-w-4xl">
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-indigo-400/60 mb-8 reveal">Land Your Web</p>
 
-        <div className="relative max-w-5xl mx-auto px-6 pt-32 pb-24 lg:pt-44 lg:pb-36">
-          {/* Label with accent line */}
-          <div className="geo-accent-line pl-4 mb-8">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-slate-400 animate-fade-in">Land Your Web</p>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight tracking-[-0.03em] leading-[0.95] text-white reveal reveal-delay-1">
+              We build websites<br />
+              <span className="text-gradient">that win awards.</span>
+            </h1>
+
+            <p className="text-xl text-white/40 leading-relaxed mt-10 max-w-xl reveal reveal-delay-2">
+              A web development studio for professional practices. Custom builds, 
+              10-day delivery, managed forever. If your site looks like everyone else&apos;s, 
+              you&apos;re losing clients.
+            </p>
+
+            <div className="flex flex-wrap gap-4 mt-12 reveal reveal-delay-3">
+              <Link href="/contact" className="group hoverable inline-flex items-center gap-3 bg-white hover:bg-white/90 text-black px-8 py-4 rounded-xl font-semibold text-sm transition-all duration-300 hover:shadow-[0_0_40px_rgba(99,102,241,0.3)]">
+                Start a project
+                <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+              </Link>
+              <Link href="/services" className="hoverable inline-flex items-center gap-2 border border-white/10 hover:border-white/30 text-white/60 hover:text-white px-8 py-4 rounded-xl font-medium text-sm transition-all duration-300">
+                Explore services
+              </Link>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <h1 className="text-4xl lg:text-6xl xl:text-7xl font-light tracking-[-0.02em] text-slate-900 leading-[1.06] max-w-4xl animate-fade-in-up">
-            Websites for practices that <span className="text-indigo-600">deserve better</span> than a template.
-          </h1>
-
-          <p className="text-lg lg:text-xl text-slate-500 leading-relaxed mt-8 max-w-2xl animate-fade-in-up stagger-1">
-            Custom, high-performance websites for dental, legal, medical, and financial 
-            practices. Ten-day delivery. Ongoing management included. One team, end to end.
-          </p>
-
-          <div className="flex flex-wrap gap-4 mt-10 animate-fade-in-up stagger-2">
-            <Link href="/contact" className="group inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-lg hover:shadow-slate-900/10">
-              Start a project
-              <span className="group-hover:translate-x-0.5 transition-transform duration-200" aria-hidden="true">→</span>
-            </Link>
-            <Link href="/services" className="inline-flex items-center gap-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 px-6 py-3.5 rounded-lg font-medium text-sm transition-all duration-300">
-              See what&apos;s included
-            </Link>
-          </div>
-
-          {/* Stats bar — with animation delays */}
-          <div className="grid grid-cols-3 gap-8 lg:gap-16 mt-24 pt-12 border-t border-slate-100">
+      {/* Stats */}
+      <section className="border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 py-24">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16">
             {[
-              { value: "10", unit: "days", label: "Average delivery time" },
-              { value: "3", unit: "tiers", label: "From foundation to dominance" },
-              { value: "24/7", unit: "", label: "Monitoring and management" },
-            ].map((s, i) => (
-              <div key={s.label} className={`animate-fade-in-up ${i === 0 ? '' : i === 1 ? 'stagger-1' : 'stagger-2'}`}>
-                <div className="stat-number text-2xl lg:text-3xl xl:text-4xl font-light tracking-[-0.02em] text-slate-900">
-                  {s.value}
-                  <span className="text-base lg:text-lg text-slate-400 ml-1 font-normal">{s.unit}</span>
+              { value: 10, suffix: "", label: "Day average delivery" },
+              { value: 98, suffix: "%", label: "Client satisfaction rate" },
+              { value: 0, suffix: "", label: "Templates in our workflow" },
+              { value: 24, suffix: "/7", label: "Monitoring and management" },
+            ].map((s) => (
+              <Reveal key={s.label}>
+                <div className="text-4xl lg:text-5xl font-extralight text-white tracking-[-0.02em] mb-2">
+                  {s.value === 98 ? "98%" : s.value === 0 ? "Zero" : <AnimatedCounter value={s.value} suffix={s.suffix} />}
                 </div>
-                <div className="text-sm text-slate-500 mt-1.5 leading-snug">{s.label}</div>
-              </div>
+                <div className="text-sm text-white/30">{s.label}</div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services — asymmetric grid with CSS icons */}
-      <section className="border-t border-slate-100 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/80 to-transparent pointer-events-none h-64" />
-        <div className="relative max-w-5xl mx-auto px-6 py-24 lg:py-32">
-          <div className="geo-accent-line pl-4 mb-4">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-slate-400">What we do</p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-x-20 gap-y-16">
-            {[
-              {
-                title: "Web Design & Development",
-                desc: "Custom sites built on Next.js and Tailwind CSS. Fast, accessible, responsive. Every site is purpose-built — not a repainted template.",
-                icon: "01",
-              },
-              {
-                title: "Lead Generation",
-                desc: "Automated pipeline that finds practices needing better websites. Identifies, enriches, and scores prospects. You reach the right people.",
-                icon: "02",
-              },
-              {
-                title: "SEO & Content",
-                desc: "Technical SEO, content strategy, ongoing optimization. Rank for the terms your clients search. Real data, real results.",
-                icon: "03",
-              },
-              {
-                title: "Analytics & Insights",
-                desc: "Dashboards showing what matters. Revenue impact, lead quality, conversion rates. Not vanity metrics — actionable intelligence.",
-                icon: "04",
-              },
-            ].map((s, i) => (
-              <div key={s.title} className={`group ${i === 0 ? "lg:col-span-2 lg:max-w-2xl" : ""}`}>
-                <div className={`service-icon bg-slate-900 text-white mb-5 group-hover:bg-indigo-600 transition-colors duration-300 ${i === 0 ? "" : ""}`}>
-                  {s.icon}
-                </div>
-                <h3 className={`font-semibold text-slate-900 mb-3 ${i === 0 ? "text-2xl lg:text-3xl font-light tracking-[-0.01em]" : "text-lg"}`}>
-                  {s.title}
-                </h3>
-                <p className="text-sm text-slate-500 leading-relaxed max-w-lg">{s.desc}</p>
-              </div>
-            ))}
-          </div>
+      {/* Services — horizontal scroll */}
+      <section className="border-t border-white/5 py-24">
+        <div className="max-w-7xl mx-auto px-6 mb-12">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-indigo-400/60 mb-4 reveal">What we do</p>
+          <h2 className="text-4xl lg:text-5xl font-extralight tracking-[-0.02em] text-white reveal reveal-delay-1">
+            Everything your practice needs.
+          </h2>
         </div>
+        <HScroll items={[
+          { stat: "01", title: "Web Design", desc: "Custom Next.js sites. Not templates — every pixel is purpose-built for your practice and your clients." },
+          { stat: "02", title: "Lead Generation", desc: "Automated pipeline finds practices that need better websites. You reach decision-makers, not gatekeepers." },
+          { stat: "03", title: "SEO & Content", desc: "Technical SEO, content strategy, ongoing optimization. Rank for terms your clients actually search." },
+          { stat: "04", title: "Analytics", desc: "Real dashboards, real data. Revenue impact, lead quality, conversion rates. Not vanity metrics." },
+          { stat: "05", title: "Management", desc: "Hosting, SSL, updates, monitoring, improvements. We never hand off and disappear." },
+        ]} />
       </section>
 
-      {/* Process — timeline with hover cards */}
-      <section className="border-t border-slate-100 bg-slate-50/50">
-        <div className="max-w-5xl mx-auto px-6 py-24 lg:py-32">
-          <div className="geo-accent-line pl-4 mb-4">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-slate-400">How it works</p>
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-light tracking-[-0.02em] text-slate-900 mb-16">
-            From conversation to live site in 10 days
+      {/* Process */}
+      <section className="border-t border-white/5 py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-indigo-400/60 mb-4 reveal">How it works</p>
+          <h2 className="text-4xl lg:text-5xl font-extralight tracking-[-0.02em] text-white mb-16 reveal reveal-delay-1">
+            From conversation to launch.
           </h2>
 
-          <div className="space-y-0.5">
+          <div className="space-y-1">
             {[
-              { step: "01", title: "Discovery call", desc: "We learn about your practice, your clients, and what you need. 30 minutes, no pitch deck.", time: "Day 1" },
-              { step: "02", title: "Design direction", desc: "Three visual directions based on real competitor analysis. You pick one. We iterate if needed.", time: "Day 2–3" },
-              { step: "03", title: "Build and review", desc: "Full site built. You review. Changes are fast because we own the entire stack.", time: "Day 4–8" },
-              { step: "04", title: "Launch and manage", desc: "Site goes live. We handle hosting, updates, analytics, and improvements. You focus on patients.", time: "Day 10" },
+              { step: "01", time: "Day 1", title: "Discovery", desc: "We learn your practice, your clients, your goals. 30 minutes." },
+              { step: "02", time: "Day 2–3", title: "Design", desc: "Three directions based on real competitor analysis. You pick. We iterate." },
+              { step: "03", time: "Day 4–8", title: "Build", desc: "Full site built on Next.js. You review. Changes are instant." },
+              { step: "04", time: "Day 10", title: "Launch", desc: "Site goes live. Hosting, SSL, monitoring, management — all included. Forever." },
             ].map((item, i) => (
-              <div key={item.step} className="card-hover grid grid-cols-[auto_1fr_auto] gap-6 py-6 px-4 -mx-4 rounded-lg border border-transparent">
-                <span className="font-mono text-xs text-slate-400 pt-0.5">{item.step}</span>
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-900">{item.title}</h4>
-                  <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">{item.desc}</p>
+              <Reveal key={item.step} delay={i as 0|1|2|3}>
+                <div className="group grid grid-cols-[auto_1fr_auto] gap-8 py-8 px-6 -mx-6 rounded-2xl hover:bg-white/[0.02] transition-colors duration-300 border border-transparent hover:border-white/5">
+                  <span className="font-mono text-sm text-indigo-400/40 pt-0.5">{item.step}</span>
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-2">{item.title}</h4>
+                    <p className="text-sm text-white/40 leading-relaxed">{item.desc}</p>
+                  </div>
+                  <span className="text-xs text-white/20 font-mono pt-1">{item.time}</span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono pt-0.5">{item.time}</span>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA — with geometric accent */}
-      <section className="border-t border-slate-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-indigo-50/60 to-transparent rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="relative max-w-5xl mx-auto px-6 py-24 lg:py-32 text-center">
-          <h2 className="text-3xl lg:text-4xl font-light tracking-[-0.02em] text-slate-900 mb-4">
-            Ready for a website that actually works?
+      {/* Packages — glass cards */}
+      <section className="border-t border-white/5 py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-indigo-400/60 mb-4 reveal">Packages</p>
+          <h2 className="text-4xl lg:text-5xl font-extralight tracking-[-0.02em] text-white mb-16 reveal reveal-delay-1">
+            Three tiers. Zero handoffs.
           </h2>
-          <p className="text-lg text-slate-500 mb-10 max-w-xl mx-auto leading-relaxed">
-            No templates. No outsourcing. Just a custom site built for your practice, delivered in 10 days, managed forever.
-          </p>
-          <Link href="/contact" className="group inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-lg font-medium text-sm transition-all duration-300 hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-0.5">
-            Start your project
-            <span className="group-hover:translate-x-0.5 transition-transform duration-200" aria-hidden="true">→</span>
-          </Link>
 
-          {/* Trust signals */}
-          <div className="flex flex-wrap items-center justify-center gap-8 mt-16 pt-12 border-t border-slate-100">
-            {["10-day delivery", "No templates", "Managed hosting", "Monthly reports"].map((t) => (
-              <span key={t} className="text-xs text-slate-400 font-mono tracking-wider uppercase">{t}</span>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {[
+              { name: "Foundation", price: "$2,500", monthly: "$500", accent: false, items: ["Custom 5-page website", "Logo and visual identity", "Contact form + CRM", "Google Business Profile", "Basic SEO + SSL", "30-day support"] },
+              { name: "Growth", price: "$5,000", monthly: "$2,500", accent: true, items: ["Everything in Foundation", "Lead generation pipeline", "Automated outreach", "CRM with deal tracking", "Monthly SEO content", "Priority support"] },
+              { name: "Dominance", price: "$10,000", monthly: "$5,000", accent: false, items: ["Everything in Growth", "Multi-location strategy", "Paid advertising", "A/B testing program", "Weekly SEO content", "24/7 dedicated support"] },
+            ].map((pkg) => (
+              <Reveal key={pkg.name}>
+                <div className={`glass rounded-2xl p-8 hoverable h-full flex flex-col ${pkg.accent ? "border-indigo-500/30 ring-1 ring-indigo-500/20" : ""}`}>
+                  <h3 className="text-lg font-semibold text-white mb-1">{pkg.name}</h3>
+                  <div className="flex items-baseline gap-1 mt-6 mb-1">
+                    <span className="text-4xl font-extralight text-white">{pkg.price}</span>
+                    <span className="text-sm text-white/30">setup</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mb-8">
+                    <span className="text-xl font-extralight text-white">{pkg.monthly}</span>
+                    <span className="text-sm text-white/30">/month</span>
+                  </div>
+                  <ul className="space-y-4 mb-8 flex-1">
+                    {pkg.items.map((item) => (
+                      <li key={item} className="text-sm text-white/50 flex items-start gap-3">
+                        <span className="text-indigo-400/60 mt-0.5 shrink-0">—</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/contact" className={`block text-center py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${pkg.accent ? "bg-white text-black hover:bg-white/90 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)]" : "border border-white/10 text-white hover:border-white/30"}`}>
+                    Get started
+                  </Link>
+                </div>
+              </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="border-t border-white/5 py-32 relative overflow-hidden">
+        <div className="absolute inset-0 hero-glow pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-6 text-center">
+          <Reveal>
+            <h2 className="text-5xl lg:text-7xl font-extralight tracking-[-0.03em] text-white mb-6">
+              Ready for something <span className="text-gradient">different?</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={1}>
+            <p className="text-xl text-white/30 mb-12 max-w-xl mx-auto">
+              Most agency sites look the same. Yours won&apos;t. Let&apos;s build something that turns heads.
+            </p>
+          </Reveal>
+          <Reveal delay={2}>
+            <Link href="/contact" className="hoverable group inline-flex items-center gap-3 bg-white hover:bg-white/90 text-black px-10 py-5 rounded-xl font-semibold text-base transition-all duration-300 hover:shadow-[0_0_60px_rgba(99,102,241,0.4)] animate-pulse-glow">
+              Start your project
+              <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+            </Link>
+          </Reveal>
         </div>
       </section>
     </div>
