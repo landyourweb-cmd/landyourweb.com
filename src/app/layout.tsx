@@ -1,101 +1,55 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Link from "next/link";
+import { Source_Sans_3, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
-const inter = Inter({
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Land Your Web — 10-Day Websites That Generate Leads",
-  description:
-    "We build high-performance websites for service businesses — and deliver a working lead generation system in 10 days. Dental, legal, medical, veterinary, and real estate.",
-  keywords: [
-    "web design",
-    "lead generation",
-    "dental website",
-    "legal website",
-    "medical website",
-    "small business website",
-  ],
-  openGraph: {
-    title: "Land Your Web — 10-Day Websites That Generate Leads",
-    description:
-      "AI-powered websites for trust-dependent professionals. 10 days to launch. Transparent pricing. You own everything.",
-    type: "website",
+  title: {
+    default: "Land Your Web — Websites for Professional Practices",
+    template: "%s — Land Your Web",
   },
+  description: "Custom websites for dental, legal, medical, and financial practices. 10-day delivery. Ongoing management included.",
+  metadataBase: new URL("https://landyourweb.com"),
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-white text-slate-900">
-        {/* Header */}
-        <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 z-50">
-          <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-            <Link href="/" className="flex items-center gap-2 text-xl font-bold text-slate-900">
-              <span className="text-indigo-600 text-2xl">◉</span>
+    <html lang="en" className={`${sourceSans.variable} ${jetbrainsMono.variable}`}>
+      <body className="font-sans antialiased">
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+          <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <Link href="/" className="font-semibold text-slate-900 tracking-tight text-lg">
               Land Your Web
             </Link>
-            <nav className="hidden md:flex gap-8 text-sm font-medium text-slate-500">
-              <Link href="/services" className="hover:text-slate-900 transition">
-                Services
-              </Link>
-              <Link href="/about" className="hover:text-slate-900 transition">
-                About
-              </Link>
-              <Link href="/contact" className="hover:text-slate-900 transition">
-                Contact
-              </Link>
+            <nav className="hidden sm:flex items-center gap-8">
+              <Link href="/services" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Services</Link>
+              <Link href="/about" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">About</Link>
+              <Link href="/contact" className="text-sm font-medium text-slate-900 hover:text-slate-700 transition-colors">Start a project →</Link>
             </nav>
-            <Link
-              href="/contact"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm"
-            >
-              Start Your Project
-            </Link>
           </div>
         </header>
-
-        {/* Main Content */}
-        <main className="flex-1">{children}</main>
-
-        {/* Footer */}
-        <footer className="bg-slate-900 text-slate-400 py-12">
-          <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center gap-2 text-lg font-bold text-white mb-3">
-                <span className="text-indigo-400">◉</span> Land Your Web
-              </div>
-              <p className="text-sm leading-relaxed">
-                AI-powered websites for trust-dependent professionals. Built in 10 days. You own everything.
-              </p>
+        <main>{children}</main>
+        <footer className="border-t border-slate-100">
+          <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-400">© {new Date().getFullYear()} Land Your Web LLC. Built by OVERLORD.</p>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="text-xs text-slate-400 hover:text-slate-600 transition-colors">Privacy</Link>
+              <Link href="/contact" className="text-xs text-slate-400 hover:text-slate-600 transition-colors">Contact</Link>
             </div>
-            <div>
-              <h4 className="font-semibold text-white mb-3 text-sm">Services</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/services" className="hover:text-white transition">Web Development</Link></li>
-                <li><Link href="/services" className="hover:text-white transition">Lead Generation</Link></li>
-                <li><Link href="/services" className="hover:text-white transition">SEO & Content</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-3 text-sm">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-white transition">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="max-w-6xl mx-auto px-6 mt-8 pt-8 border-t border-slate-800 text-center text-xs">
-            © {new Date().getFullYear()} Land Your Web LLC. Your site. Your code. Your leads.
           </div>
         </footer>
       </body>

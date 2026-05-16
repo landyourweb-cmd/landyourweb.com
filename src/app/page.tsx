@@ -1,128 +1,93 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Land Your Web — Websites for Professional Practices",
+  description: "We build and manage websites for dental, legal, medical, and financial practices. 10-day delivery. Ongoing management included.",
+};
+
+const stats = [
+  { value: "10", unit: "days", label: "Average delivery" },
+  { value: "3", unit: "tiers", label: "From foundation to dominance" },
+  { value: "24/7", unit: "", label: "Monitoring and management" },
+];
+
+const services = [
+  { name: "Web Design & Development", desc: "Custom websites built on Next.js and Tailwind CSS. Fast, accessible, responsive. Not templates — every site is purpose-built for your practice.", href: "/services" },
+  { name: "Lead Generation", desc: "We find practices that need better websites. Automated pipeline identifies, enriches, and scores prospects so you reach the right people at the right time.", href: "/services" },
+  { name: "SEO & Content", desc: "Technical SEO, content strategy, and ongoing optimization. Rank for the terms your clients actually search for.", href: "/services" },
+  { name: "Analytics & Insights", desc: "Real dashboards showing what's working. Not vanity metrics — revenue impact, lead quality, conversion rates.", href: "/services" },
+];
 
 export default function HomePage() {
   return (
-    <>
+    <div className="bg-white">
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 -z-10" />
-        <div className="max-w-5xl mx-auto px-6 py-24 text-center">
-          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-semibold px-4 py-2 rounded-full mb-8">
-            <span className="w-2 h-2 bg-emerald-400 rounded-full" />
-            10-Day Delivery • Transparent Pricing • You Own Everything
-          </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 text-slate-900 tracking-tight">
-            Websites that<br />
-            <span className="bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">
-              make the phone ring.
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-500 max-w-xl mx-auto mb-10 leading-relaxed">
-            We build high-performance websites for service businesses — and deliver a working lead generation system in 10 days. Not 10 weeks.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contact"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl text-lg font-bold transition shadow-lg shadow-indigo-200"
-            >
-              See Our Packages
-            </Link>
-            <Link
-              href="/services"
-              className="border border-slate-200 hover:border-slate-400 text-slate-700 px-8 py-4 rounded-xl text-lg font-semibold transition"
-            >
-              How It Works
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="border-y border-slate-100 bg-white">
-        <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { value: "10", label: "Days to Launch" },
-            { value: "85+", label: "Lighthouse Score" },
-            { value: "200+", label: "Leads / Month" },
-            { value: "100%", label: "You Own the Code" },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <div className="text-3xl font-extrabold text-indigo-600">{stat.value}</div>
-              <div className="text-sm text-slate-400 mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Services */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <h2 className="text-3xl font-extrabold text-center mb-4 tracking-tight">Who We Build For</h2>
-        <p className="text-slate-500 text-center mb-14 max-w-xl mx-auto">
-          Trust-dependent professionals who get chosen because someone trusted them enough to make the referral.
+      <section className="max-w-5xl mx-auto px-6 pt-32 pb-20 lg:pt-40 lg:pb-28">
+        <p className="font-mono text-xs uppercase tracking-widest text-slate-400 mb-6">Land Your Web</p>
+        <h1 className="text-4xl lg:text-6xl font-light tracking-tight text-slate-900 leading-[1.08] max-w-3xl">
+          Websites for practices that deserve better than a template.
+        </h1>
+        <p className="text-lg lg:text-xl text-slate-500 leading-relaxed mt-8 max-w-2xl">
+          We build custom, high-performance websites for dental, legal, medical, and financial 
+          practices. Ten-day delivery. Ongoing management included. No contractors, no handoffs — 
+          one team, end to end.
         </p>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            {
-              emoji: "🦷",
-              title: "Dental Practices",
-              desc: "HIPAA-aware websites that turn researchers into patients. Online booking, reputation management, new patient acquisition.",
-            },
-            {
-              emoji: "⚖️",
-              title: "Law Firms",
-              desc: "Websites that establish authority before the consultation. Case results, attorney profiles, intake automation.",
-            },
-            {
-              emoji: "🏥",
-              title: "Medical Specialists",
-              desc: "Cash-pay procedure sites. Dermatology, plastics, cardiology — your website IS your salesperson.",
-            },
-            {
-              emoji: "🐾",
-              title: "Veterinary Practices",
-              desc: "Pet parents research obsessively. We build sites that earn trust before they ever pick up the phone.",
-            },
-            {
-              emoji: "🏠",
-              title: "Real Estate Teams",
-              desc: "Lead capture engines for teams who live and die by their pipeline. IDX-ready, agent branding, property showcases.",
-            },
-            {
-              emoji: "📊",
-              title: "CPAs & Wealth Managers",
-              desc: "Your expertise is invisible online. We make it visible — and turn website visitors into consultation bookings.",
-            },
-          ].map((service) => (
-            <div
-              key={service.title}
-              className="bg-white border border-slate-200 rounded-2xl p-8 hover:border-indigo-200 hover:shadow-md transition"
-            >
-              <div className="text-3xl mb-4">{service.emoji}</div>
-              <h3 className="font-bold text-lg mb-2">{service.title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{service.desc}</p>
+        <div className="flex flex-wrap gap-4 mt-10">
+          <Link href="/contact" className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-lg font-medium text-sm transition-colors">
+            Start a project <span aria-hidden="true">→</span>
+          </Link>
+          <Link href="/services" className="inline-flex items-center gap-2 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 px-6 py-3 rounded-lg font-medium text-sm transition-colors">
+            See what&apos;s included
+          </Link>
+        </div>
+
+        {/* Stats bar */}
+        <div className="grid grid-cols-3 gap-8 mt-20 pt-12 border-t border-slate-100">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <div className="text-2xl lg:text-3xl font-light tracking-tight text-slate-900">
+                {s.value}<span className="text-lg text-slate-400 ml-0.5">{s.unit}</span>
+              </div>
+              <div className="text-sm text-slate-500 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="bg-slate-50 border-y border-slate-100 py-24">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-extrabold text-center mb-4 tracking-tight">From Zero to Live in 10 Days</h2>
-          <p className="text-slate-500 text-center mb-14">Here&apos;s what happens after you say yes.</p>
-          <div className="space-y-0">
+      {/* Services — asymmetric grid, no icon circles */}
+      <section className="border-t border-slate-100">
+        <div className="max-w-5xl mx-auto px-6 py-20 lg:py-28">
+          <p className="font-mono text-xs uppercase tracking-widest text-slate-400 mb-4">What we do</p>
+          <div className="grid lg:grid-cols-2 gap-x-16 gap-y-14">
+            {services.map((s, i) => (
+              <div key={s.name} className={i === 0 ? "lg:col-span-2 lg:max-w-2xl" : ""}>
+                <h3 className="text-xl font-medium text-slate-900 mb-3">{s.name}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works — timeline, not cards */}
+      <section className="border-t border-slate-100 bg-slate-50/50">
+        <div className="max-w-5xl mx-auto px-6 py-20 lg:py-28">
+          <p className="font-mono text-xs uppercase tracking-widest text-slate-400 mb-4">How it works</p>
+          <h2 className="text-3xl lg:text-4xl font-light tracking-tight text-slate-900 mb-14">From conversation to live site in 10 days</h2>
+
+          <div className="space-y-1">
             {[
-              { day: "Day 1", title: "Discovery & Strategy", desc: "30-minute call. We learn your practice, your market, your goals. AI maps your competitive landscape overnight." },
-              { day: "Day 2–3", title: "Design & Build", desc: "You pick a design direction. AI builds the full site — responsive, optimized, ready for your review." },
-              { day: "Day 4–7", title: "Review & Refine", desc: "You review. You request changes. AI applies them. This loop runs until you're thrilled — typically 2 rounds." },
-              { day: "Day 8–10", title: "Launch & Leads", desc: "Site goes live. SEO activates. Analytics start tracking. Lead pipeline begins delivering. Your phone rings." },
-            ].map((step, i) => (
-              <div key={step.day} className={`flex gap-6 pb-10 ${i < 3 ? "border-l-2 border-indigo-200" : ""} pl-8 relative`}>
-                <div className={`absolute -left-[13px] w-6 h-6 rounded-full border-4 border-white ${i === 3 ? "bg-gradient-to-br from-indigo-500 to-cyan-400 shadow-lg shadow-indigo-200" : "bg-indigo-500"}`} />
+              { step: "01", title: "Discovery call", desc: "We learn about your practice, your clients, and what you need the site to accomplish. 30 minutes." },
+              { step: "02", title: "Design direction", desc: "You get three visual directions based on real competitor analysis. Pick one, or we iterate." },
+              { step: "03", title: "Build and review", desc: "We build the full site. You review. Changes are fast because we own the entire stack." },
+              { step: "04", title: "Launch and manage", desc: "Site goes live. We handle hosting, updates, analytics, and ongoing improvements. You focus on your practice." },
+            ].map((item) => (
+              <div key={item.step} className="grid grid-cols-[auto_1fr] gap-6 py-5 border-b border-slate-100 last:border-0">
+                <span className="font-mono text-xs text-slate-400 pt-0.5">{item.step}</span>
                 <div>
-                  <div className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">{step.day}</div>
-                  <h3 className="font-bold text-lg mb-1">{step.title}</h3>
-                  <p className="text-slate-500 text-sm">{step.desc}</p>
+                  <h4 className="text-sm font-semibold text-slate-900">{item.title}</h4>
+                  <p className="text-sm text-slate-500 mt-1 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -130,19 +95,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-gradient-to-r from-indigo-600 to-cyan-500 py-20 text-center text-white">
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-3xl font-extrabold mb-4 tracking-tight">10 days to a website that generates leads.</h2>
-          <p className="text-indigo-100 mb-8 text-lg">If your phone doesn&apos;t ring by day 10, month 2 is on us.</p>
-          <Link
-            href="/contact"
-            className="inline-block bg-white text-indigo-700 px-8 py-4 rounded-xl text-lg font-bold hover:bg-indigo-50 transition shadow-xl"
-          >
-            Start Your Project →
+      {/* CTA — clean, direct */}
+      <section className="border-t border-slate-100">
+        <div className="max-w-5xl mx-auto px-6 py-20 lg:py-28 text-center">
+          <h2 className="text-3xl lg:text-4xl font-light tracking-tight text-slate-900 mb-4">
+            Ready for a website that actually works?
+          </h2>
+          <p className="text-lg text-slate-500 mb-8 max-w-xl mx-auto">
+            No templates. No outsourcing. Just a custom site built for your practice, delivered in 10 days.
+          </p>
+          <Link href="/contact" className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-lg font-medium text-sm transition-colors">
+            Start your project <span aria-hidden="true">→</span>
           </Link>
         </div>
       </section>
-    </>
+    </div>
   );
 }

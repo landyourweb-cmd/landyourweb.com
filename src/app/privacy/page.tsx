@@ -1,71 +1,50 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Land Your Web",
-  description: "How we collect, use, and protect your information.",
+  title: "Privacy Policy",
+  description: "Land Your Web privacy policy. We don't sell your data. We don't share it. We use it only to provide our services.",
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-24 prose prose-slate prose-sm sm:prose-base">
-      <h1>Privacy Policy</h1>
-      <p className="text-slate-500">Last updated: May 15, 2026</p>
+    <div className="bg-white">
+      <div className="max-w-2xl mx-auto px-6 py-24 lg:py-32">
+        <p className="font-mono text-xs uppercase tracking-widest text-slate-400 mb-6">Legal</p>
+        <h1 className="text-4xl font-light tracking-tight text-slate-900 mb-2">Privacy Policy</h1>
+        <p className="text-sm text-slate-400 mb-12">Last updated May 16, 2026</p>
 
-      <h2>1. Information We Collect</h2>
-      <p>
-        When you contact us through our website, we collect the information you provide: your name,
-        email address, practice name, website URL, and any message content you choose to share.
-      </p>
-      <p>
-        We also use Plausible Analytics, a privacy-first analytics tool that does not use cookies
-        and does not collect personal data. Plausible tracks page views, referrers, and device types
-        in aggregate — never at an individual level.
-      </p>
+        <div className="prose prose-slate prose-sm max-w-none space-y-8">
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">1. What we collect</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">When you fill out our contact form, we collect your name, email address, company name, and any message you provide. We also collect anonymous usage data through Plausible Analytics — page views, referrers, and device types. No cookies, no tracking IDs, no fingerprinting.</p>
+          </section>
 
-      <h2>2. How We Use Your Information</h2>
-      <p>We use the information you provide solely to:</p>
-      <ul>
-        <li>Respond to your inquiry about our services</li>
-        <li>Provide you with information about our packages and pricing</li>
-        <li>Deliver the services you&apos;ve contracted us for</li>
-      </ul>
-      <p>We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">2. How we use it</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">We use your contact information to respond to your inquiry and provide our services. We use analytics data to understand how people find and use our site so we can make it better. That&apos;s it.</p>
+          </section>
 
-      <h2>3. Data Storage & Security</h2>
-      <p>
-        Your data is stored securely and accessed only by Land Your Web LLC personnel and authorized
-        AI systems involved in delivering your services. We use industry-standard encryption (SSL/TLS)
-        for all data transmission.
-      </p>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">3. What we don&apos;t do</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">We don&apos;t sell your data. We don&apos;t share it with third parties. We don&apos;t use it for advertising. We don&apos;t buy or rent email lists. We don&apos;t use tracking cookies.</p>
+          </section>
 
-      <h2>4. Your Rights</h2>
-      <p>You have the right to:</p>
-      <ul>
-        <li>Request a copy of any personal data we hold about you</li>
-        <li>Request that we correct or delete your personal data</li>
-        <li>Opt out of any communications at any time</li>
-      </ul>
-      <p>To exercise these rights, contact us at hello@landyourweb.com.</p>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">4. Where your data lives</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">Contact form submissions are stored in Supabase (EU-West, Ireland) and forwarded to our email. Analytics data is stored in Plausible (EU). Your data never leaves the European Union.</p>
+          </section>
 
-      <h2>5. Third-Party Services</h2>
-      <p>
-        We use the following third-party services in the delivery of our work. Each has its own privacy policy:
-      </p>
-      <ul>
-        <li><strong>Vercel</strong> — website hosting and deployment</li>
-        <li><strong>Supabase</strong> — database and authentication</li>
-        <li><strong>Plausible Analytics</strong> — privacy-first website analytics</li>
-      </ul>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">5. Your rights</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">You can ask us what data we have about you, request corrections, or ask us to delete it. Email hello@landyourweb.com. We&apos;ll respond within 30 days as required by GDPR.</p>
+          </section>
 
-      <h2>6. Contact</h2>
-      <p>
-        Land Your Web LLC<br />
-        Email: hello@landyourweb.com
-      </p>
-      <p>
-        For any questions about this privacy policy or how we handle your data, please reach out.
-        We&apos;ll respond within 48 hours.
-      </p>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">6. Contact</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">Land Your Web LLC. Questions about this policy? Email hello@landyourweb.com.</p>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }
