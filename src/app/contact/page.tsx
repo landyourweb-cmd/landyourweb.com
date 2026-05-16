@@ -1,11 +1,79 @@
-import type { Metadata } from "next";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Contact — Land Your Web",
-  description: "Start your project. Tell us about your practice and we'll get back to you within 24 hours.",
-};
+import { useState } from 'react';
 
 export default function ContactPage() {
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    // Dual-write: Formspree (email) + Supabase (database)
+    try {
+      // 1. Formspree — delivers email notification
+      await fetch('https://formspree.io/f/mjglnnon', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' },
+      });
+
+      // 2. Supabase — stores contact in database
+      const supabaseUrl = 'https://fkgdehorjzbqwwakbzxw.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZ2RlaG9yanpicXd3YWtienh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MzkwNzUsImV4cCI6MjA5NDUxNTA3NX0.98V4Ik5yF9TmettBYxLa87m_LxMBZFI_7v69hoZRCag';
+
+      await fetch(`${supabaseUrl}/rest/v1/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({
+          name: data.get('name'),
+          email: data.get('email'),
+          company: data.get('practice') || null,
+          message: data.get('message'),
+          service_interest: data.get('package') || null,
+          source: 'website',
+        }),
+      });
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Form submission error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-24 text-center">
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-10">
+          <div className="text-5xl mb-4">🎉</div>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-3 text-green-800">
+            Message Sent!
+          </h1>
+          <p className="text-lg text-green-700 mb-6">
+            Thanks for reaching out. We&apos;ll get back to you within 24 hours — usually much faster.
+          </p>
+          <a
+            href="/"
+            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition"
+          >
+            ← Back to Home
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-24">
       <div className="text-center mb-12">
@@ -16,8 +84,7 @@ export default function ContactPage() {
       </div>
 
       <form
-        action="https://formspree.io/f/your-form-id"
-        method="POST"
+        onSubmit={handleSubmit}
         className="space-y-6 bg-white border border-slate-200 rounded-2xl p-8 shadow-sm"
       >
         <div className="grid sm:grid-cols-2 gap-6">
@@ -63,19 +130,6 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label htmlFor="website" className="block text-sm font-semibold text-slate-700 mb-2">
-            Current Website (if any)
-          </label>
-          <input
-            type="url"
-            id="website"
-            name="website"
-            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-            placeholder="https://yourcurrentsite.com"
-          />
-        </div>
-
-        <div>
           <label htmlFor="package" className="block text-sm font-semibold text-slate-700 mb-2">
             Interested In
           </label>
@@ -112,13 +166,14 @@ export default function ContactPage() {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg transition shadow-lg shadow-indigo-200"
+          disabled={loading}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white py-4 rounded-xl font-bold text-lg transition shadow-lg shadow-indigo-200"
         >
-          Send Message →
+          {loading ? 'Sending...' : 'Send Message →'}
         </button>
 
         <p className="text-xs text-slate-400 text-center">
-          By submitting, you agree to our{" "}
+          By submitting, you agree to our{' '}
           <a href="/privacy" className="underline hover:text-slate-600">Privacy Policy</a>.
           We&apos;ll never share your information.
         </p>
@@ -126,7 +181,7 @@ export default function ContactPage() {
 
       <div className="text-center mt-12">
         <p className="text-slate-500 text-sm">
-          Prefer to talk?{" "}
+          Prefer to talk?{' '}
           <a href="mailto:hello@landyourweb.com" className="text-indigo-600 font-semibold hover:underline">
             hello@landyourweb.com
           </a>
