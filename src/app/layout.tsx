@@ -72,30 +72,36 @@ function Nav() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // check initial state
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.04]"
-          : "bg-transparent border-b border-transparent"
-      }`}
+      className="fixed top-0 inset-x-0 z-50 transition-all duration-500"
+      style={{
+        background: scrolled ? "rgba(250, 250, 248, 0.9)" : "transparent",
+        backdropFilter: scrolled ? "blur(24px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(24px)" : "none",
+        boxShadow: scrolled ? "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px" : "none",
+      }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
-        <Link href="/" className="font-semibold text-white tracking-tight text-lg hover:opacity-80 transition-opacity">
+      <div className="max-w-7xl mx-auto px-6 lg:px-20 h-16 flex items-center justify-between">
+        <Link href="/" className="font-semibold text-[var(--text-primary)] tracking-tight text-lg hover:opacity-80 transition-opacity">
           Land Your Web
         </Link>
         <nav className="hidden sm:flex items-center gap-10">
-          <Link href="/services" className="text-sm text-white/40 hover:text-white transition-colors link-line">
+          <Link href="/services" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors link-line">
             Services
           </Link>
-          <Link href="/about" className="text-sm text-white/40 hover:text-white transition-colors link-line">
+          <Link href="/about" className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors link-line">
             About
           </Link>
-          <Link href="/contact" className="text-sm font-medium text-white hover:text-accent transition-colors">
+          <Link
+            href="/contact"
+            className="text-sm font-semibold transition-colors"
+            style={{color: "var(--lyw-blue)"}}
+          >
             Start a project →
           </Link>
         </nav>
@@ -106,17 +112,19 @@ function Nav() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sourceSans.variable} ${jetbrainsMono.variable} bg-[#0a0a0a]`}>
-      <body className="font-sans antialiased noise">
+    <html lang="en" className={`${sourceSans.variable} ${jetbrainsMono.variable}`} style={{background: "var(--canvas-cream)"}}>
+      <body className="font-sans antialiased">
         <CustomCursor />
         <Nav />
         <main>{children}</main>
-        <footer className="border-t border-white/[0.04]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-white/15">© {new Date().getFullYear()} Land Your Web LLC</p>
+        <footer className="section-navy">
+          <div className="max-w-7xl mx-auto px-6 lg:px-20 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs" style={{color: "rgba(255,255,255,0.3)"}}>
+              © {new Date().getFullYear()} Land Your Web LLC
+            </p>
             <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-xs text-white/15 hover:text-white/30 transition-colors">Privacy</Link>
-              <Link href="/contact" className="text-xs text-white/15 hover:text-white/30 transition-colors">Contact</Link>
+              <Link href="/privacy" className="text-xs hover:opacity-70 transition-colors" style={{color: "rgba(255,255,255,0.3)"}}>Privacy</Link>
+              <Link href="/contact" className="text-xs hover:opacity-70 transition-colors" style={{color: "rgba(255,255,255,0.3)"}}>Contact</Link>
             </div>
           </div>
         </footer>

@@ -1,66 +1,76 @@
 @import "tailwindcss";
 
-:root {
-  --bg-deepest: #060606;
-  --bg: #0a0a0a;
-  --bg-surface: #0f0f0f;
-  --surface: #141414;
-  --border: #1f1f1f;
-  --border-subtle: rgba(255, 255, 255, 0.04);
-  --text-primary: #f5f5f5;
-  --text-secondary: #888888;
-  --text-muted: #555555;
-  --accent: #6366f1;
-  --accent-dim: rgba(99, 102, 241, 0.15);
-}
+/* ============================================
+   LAND YOUR WEB — DESIGN SYSTEM
+   "Editorial Confidence"
+   ============================================ */
 
-* { cursor: none; }
+:root {
+  /* Primary */
+  --lyw-blue: #2d4ce4;
+  --lyw-blue-hover: #1e3ab5;
+  --lyw-blue-light: #e8edfd;
+
+  /* Surfaces */
+  --canvas-cream: #fafaf8;
+  --surface-white: #ffffff;
+  --navy-depth: #0d1b3e;
+
+  /* Text */
+  --text-primary: #1a1a18;
+  --text-secondary: #575753;
+  --text-muted: #8a8985;
+
+  /* Borders (shadow-as-border technique, Vercel-inspired) */
+  --border-shadow: rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  --border-subtle: rgba(0, 0, 0, 0.04) 0px 0px 0px 1px;
+
+  /* Shadows */
+  --card-shadow: rgba(0, 0, 0, 0.06) 0px 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 2px 4px, rgba(0, 0, 0, 0.02) 0px 8px 16px -4px;
+  --card-hover: rgba(0, 0, 0, 0.08) 0px 0px 0px 1px, rgba(0, 0, 0, 0.06) 0px 4px 8px, rgba(0, 0, 0, 0.04) 0px 12px 24px -8px;
+  --card-accent: rgba(45, 76, 228, 0.25) 0px 0px 0px 1px, rgba(45, 76, 228, 0.08) 0px 4px 12px;
+
+  /* Other */
+  --teal-success: #0d9488;
+  --radius-card: 12px;
+  --radius-btn: 8px;
+}
 
 body {
   font-family: var(--font-sans);
-  background: var(--bg);
+  background: var(--canvas-cream);
   color: var(--text-secondary);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-::selection { background: var(--accent); color: white; }
+::selection { background: var(--lyw-blue); color: white; }
 
-/* === CUSTOM CURSOR === */
+/* === CUSTOM CURSOR (subtle for light mode) === */
 .cursor {
   width: 12px; height: 12px;
-  background: var(--accent);
+  background: var(--lyw-blue);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
   z-index: 9999;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
+  opacity: 0.85;
   transition: width 0.3s, height 0.3s, background 0.3s;
 }
-.cursor.hover { width: 48px; height: 48px; background: transparent; border: 2px solid var(--accent); }
+.cursor.hover { width: 48px; height: 48px; background: transparent; border: 2px solid var(--lyw-blue); }
 .cursor-ring {
   width: 40px; height: 40px;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(45, 76, 228, 0.25);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
   z-index: 9998;
   transition: width 0.4s, height 0.4s;
 }
-.cursor-ring.hover { width: 64px; height: 64px; border-color: var(--accent); }
+.cursor-ring.hover { width: 64px; height: 64px; border-color: var(--lyw-blue); }
 
-/* === NOISE OVERLAY === */
-.noise::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  opacity: 0.015;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9996;
-}
-
-/* === SCROLL REVEAL (tighter for L6) === */
+/* === SCROLL REVEAL === */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -71,27 +81,22 @@ body {
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
 
-/* === L6 — SECTION RHYTHM: alternating backgrounds === */
-.section-deepest { background: var(--bg-deepest); }
-.section-default { background: var(--bg); }
-.section-surface { background: var(--bg-surface); }
+/* === SECTION RHYTHM: cream / white alternating === */
+.section-cream { background: var(--canvas-cream); }
+.section-white { background: var(--surface-white); }
+.section-navy { background: var(--navy-depth); }
 
-/* === L6 — EDITORIAL PROSE COLUMN === */
-.prose-column {
-  max-width: 65ch;
-}
-
-/* === L6 — GOLDEN THREAD: vertical timeline line === */
+/* === GOLDEN THREAD: vertical line at 8% === */
 .thread-line {
   position: absolute;
-  left: 0;
+  left: 8%;
   top: 0;
   bottom: 0;
   width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.06), transparent);
 }
 
-/* === L6 — SECTION BRIDGE (connects sections visually) === */
+/* === SECTION BRIDGE: gradient line between sections === */
 .section-bridge {
   position: relative;
 }
@@ -102,13 +107,72 @@ body {
   left: 10%;
   right: 10%;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(99, 102, 241, 0.12), transparent);
+  background: linear-gradient(to right, transparent, rgba(45, 76, 228, 0.08), transparent);
 }
 
-/* === COUNTER — tabular nums === */
+/* === CARD: shadow-as-border technique === */
+.card {
+  background: var(--surface-white);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card.hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-hover);
+}
+
+/* === ACCENT CARD: blue-tinted === */
+.card-accent {
+  box-shadow: var(--card-accent);
+}
+.card-accent.hoverable:hover {
+  box-shadow: rgba(45, 76, 228, 0.35) 0px 0px 0px 1px, rgba(45, 76, 228, 0.12) 0px 6px 16px;
+}
+
+/* === COMPARISON CARD: them vs us === */
+.compare-card {
+  background: var(--surface-white);
+  box-shadow: var(--border-shadow);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
+.compare-card:hover {
+  box-shadow: rgba(45, 76, 228, 0.15) 0px 0px 0px 1px, rgba(45, 76, 228, 0.04) 0px 4px 8px;
+}
+
+/* === COUNTER: tabular nums === */
 .counter {
   font-feature-settings: "tnum";
   font-variant-numeric: tabular-nums;
+}
+
+/* === HEADLINES (L1 typography, LYW weight-300 philosophy) === */
+.h1-massive {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+.h2-section {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.10;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* === MONO LABEL === */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: rgba(45, 76, 228, 0.6);
 }
 
 /* === LINK UNDERLINE === */
@@ -122,99 +186,24 @@ body {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--accent);
+  background: var(--lyw-blue);
   transition: width 0.3s ease;
 }
 .link-line:hover::after { width: 100%; }
 
-/* === COMPARISON CARD (L6: them vs us) === */
-.compare-card {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  transition: border-color 0.3s ease;
-}
-.compare-card:hover {
-  border-color: rgba(99, 102, 241, 0.2);
-}
-
-/* === CARD (replaces .glass — no backdrop blur, solid surface) === */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.card.hoverable:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-/* === ACCENT CARD (highlighted tier) === */
-.card-accent {
-  border-color: rgba(99, 102, 241, 0.25);
-  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.1);
-}
-.card-accent.hoverable:hover {
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.15), 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* === HERO HIGHLIGHT (subtle text accent, not full gradient) === */
-.text-accent { color: var(--accent); }
-
-/* === HEADLINE SIZING (L1 typography system, preserved) === */
-.h1-massive {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: clamp(3rem, 7vw, 7rem);
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
-}
-.h2-section {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: clamp(2.25rem, 4vw, 3.75rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
-/* === MONO LABEL === */
-.mono-label {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+/* === PILL BADGE === */
+.pill-badge {
+  background: var(--lyw-blue-light);
+  color: var(--lyw-blue);
+  font-size: 0.65rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
-  color: rgba(99, 102, 241, 0.6);
+  letter-spacing: 0.05em;
+  padding: 2px 12px;
+  border-radius: 9999px;
 }
 
-/* === HORIZONTAL SCROLL (kept for services gallery) === */
-.hscroll-container {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  gap: 1.5rem;
-  padding: 0 1.5rem 2rem;
-}
-.hscroll-container::-webkit-scrollbar { display: none; }
-.hscroll-item {
-  min-width: 380px;
-  scroll-snap-align: start;
-}
-
-/* === FLOATING ANIMATION === */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-}
-.animate-float { animation: float 6s ease-in-out infinite; }
-
-/* === HERO LOAD ANIMATION (L5) === */
+/* === HERO LOAD ANIMATION === */
 @keyframes heroReveal {
   0% { opacity: 0; transform: translateY(32px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -226,10 +215,14 @@ body {
 .hero-animate-delay-2 { animation-delay: 0.3s; }
 .hero-animate-delay-3 { animation-delay: 0.5s; }
 
+/* === PROSE COLUMN: editorial reading width === */
+.prose-column {
+  max-width: 65ch;
+}
+
 /* === PREFERS REDUCED MOTION === */
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .hero-animate { animation: none; opacity: 1; transform: none; }
   .card.hoverable:hover { transform: none; }
-  .animate-float { animation: none; }
 }
