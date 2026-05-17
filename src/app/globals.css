@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 :root {
+  --bg-deepest: #060606;
   --bg: #0a0a0a;
+  --bg-surface: #0f0f0f;
   --surface: #141414;
   --border: #1f1f1f;
+  --border-subtle: rgba(255, 255, 255, 0.04);
   --text-primary: #f5f5f5;
   --text-secondary: #888888;
+  --text-muted: #555555;
   --accent: #6366f1;
-  --accent-glow: rgba(99, 102, 241, 0.4);
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  --accent-dim: rgba(99, 102, 241, 0.15);
 }
 
 * { cursor: none; }
@@ -47,76 +49,7 @@ body {
 }
 .cursor-ring.hover { width: 64px; height: 64px; border-color: var(--accent); }
 
-/* === SCROLL ANIMATIONS === */
-.reveal {
-  opacity: 0;
-  transform: translateY(60px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-
-/* === HERO GRADIENT === */
-.hero-glow {
-  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
-}
-
-/* === GLASS CARD === */
-.glass {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* === TEXT GRADIENT === */
-.text-gradient {
-  background: linear-gradient(135deg, #f5f5f5 0%, #a5b4fc 50%, #818cf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* === HORIZONTAL SCROLL SECTION === */
-.hscroll-container {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.hscroll-container::-webkit-scrollbar { display: none; }
-.hscroll-item {
-  min-width: 400px;
-  scroll-snap-align: start;
-}
-
-/* === GLOW BORDER === */
-.glow-border {
-  position: relative;
-}
-.glow-border::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, var(--accent), transparent 50%, transparent);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.glow-border:hover::after { opacity: 0.5; }
-
-/* === NUMBER COUNTER */
-.counter {
-  font-feature-settings: "tnum";
-  font-variant-numeric: tabular-nums;
-}
-
-/* === NOISE OVERLAY */
+/* === NOISE OVERLAY === */
 .noise::before {
   content: '';
   position: fixed;
@@ -127,7 +60,58 @@ body {
   z-index: 9996;
 }
 
-/* === LINK UNDERLINE ANIMATION === */
+/* === SCROLL REVEAL (tighter for L6) === */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+
+/* === L6 — SECTION RHYTHM: alternating backgrounds === */
+.section-deepest { background: var(--bg-deepest); }
+.section-default { background: var(--bg); }
+.section-surface { background: var(--bg-surface); }
+
+/* === L6 — EDITORIAL PROSE COLUMN === */
+.prose-column {
+  max-width: 65ch;
+}
+
+/* === L6 — GOLDEN THREAD: vertical timeline line === */
+.thread-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+}
+
+/* === L6 — SECTION BRIDGE (connects sections visually) === */
+.section-bridge {
+  position: relative;
+}
+.section-bridge::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(99, 102, 241, 0.12), transparent);
+}
+
+/* === COUNTER — tabular nums === */
+.counter {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* === LINK UNDERLINE === */
 .link-line {
   position: relative;
 }
@@ -143,6 +127,86 @@ body {
 }
 .link-line:hover::after { width: 100%; }
 
+/* === COMPARISON CARD (L6: them vs us) === */
+.compare-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+.compare-card:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* === CARD (replaces .glass — no backdrop blur, solid surface) === */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card.hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* === ACCENT CARD (highlighted tier) === */
+.card-accent {
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+.card-accent.hoverable:hover {
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.15), 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* === HERO HIGHLIGHT (subtle text accent, not full gradient) === */
+.text-accent { color: var(--accent); }
+
+/* === HEADLINE SIZING (L1 typography system, preserved) === */
+.h1-massive {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(3rem, 7vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+.h2-section {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* === MONO LABEL === */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: rgba(99, 102, 241, 0.6);
+}
+
+/* === HORIZONTAL SCROLL (kept for services gallery) === */
+.hscroll-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 1.5rem;
+  padding: 0 1.5rem 2rem;
+}
+.hscroll-container::-webkit-scrollbar { display: none; }
+.hscroll-item {
+  min-width: 380px;
+  scroll-snap-align: start;
+}
+
 /* === FLOATING ANIMATION === */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -150,8 +214,22 @@ body {
 }
 .animate-float { animation: float 6s ease-in-out infinite; }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
-  50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 80px rgba(99, 102, 241, 0.2); }
+/* === HERO LOAD ANIMATION (L5) === */
+@keyframes heroReveal {
+  0% { opacity: 0; transform: translateY(32px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.hero-animate {
+  animation: heroReveal 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-animate-delay-1 { animation-delay: 0.15s; }
+.hero-animate-delay-2 { animation-delay: 0.3s; }
+.hero-animate-delay-3 { animation-delay: 0.5s; }
+
+/* === PREFERS REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero-animate { animation: none; opacity: 1; transform: none; }
+  .card.hoverable:hover { transform: none; }
+  .animate-float { animation: none; }
+}

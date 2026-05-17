@@ -19,6 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+/* ===== CUSTOM CURSOR ===== */
 function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
@@ -48,7 +49,7 @@ function CustomCursor() {
     window.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseover", onMouseOver);
     document.addEventListener("mouseout", onMouseOut);
-    
+
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
@@ -64,27 +65,42 @@ function CustomCursor() {
   );
 }
 
-function ScrollReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
+/* ===== SCROLL-AWARE NAV ===== */
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll(); // check initial state
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <div ref={ref} className={`reveal ${delay === 1 ? "reveal-delay-1" : delay === 2 ? "reveal-delay-2" : delay === 3 ? "reveal-delay-3" : ""} ${className}`}>
-      {children}
-    </div>
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/[0.04]"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
+        <Link href="/" className="font-semibold text-white tracking-tight text-lg hover:opacity-80 transition-opacity">
+          Land Your Web
+        </Link>
+        <nav className="hidden sm:flex items-center gap-10">
+          <Link href="/services" className="text-sm text-white/40 hover:text-white transition-colors link-line">
+            Services
+          </Link>
+          <Link href="/about" className="text-sm text-white/40 hover:text-white transition-colors link-line">
+            About
+          </Link>
+          <Link href="/contact" className="text-sm font-medium text-white hover:text-accent transition-colors">
+            Start a project →
+          </Link>
+        </nav>
+      </div>
+    </header>
   );
 }
 
@@ -93,26 +109,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${sourceSans.variable} ${jetbrainsMono.variable} bg-[#0a0a0a]`}>
       <body className="font-sans antialiased noise">
         <CustomCursor />
-        <ScrollReveal>{null}</ScrollReveal>
-        <header className="fixed top-0 inset-x-0 z-50 glass border-b border-white/5">
-          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <Link href="/" className="font-bold text-white tracking-tight text-lg hover:opacity-80 transition-opacity">
-              Land Your Web
-            </Link>
-            <nav className="hidden sm:flex items-center gap-10">
-              <Link href="/services" className="text-sm text-white/50 hover:text-white transition-colors link-line">Services</Link>
-              <Link href="/about" className="text-sm text-white/50 hover:text-white transition-colors link-line">About</Link>
-              <Link href="/contact" className="text-sm font-medium text-white hover:text-indigo-400 transition-colors">Start a project →</Link>
-            </nav>
-          </div>
-        </header>
+        <Nav />
         <main>{children}</main>
-        <footer className="border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} Land Your Web LLC</p>
+        <footer className="border-t border-white/[0.04]">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-white/15">© {new Date().getFullYear()} Land Your Web LLC</p>
             <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-xs text-white/20 hover:text-white/40 transition-colors">Privacy</Link>
-              <Link href="/contact" className="text-xs text-white/20 hover:text-white/40 transition-colors">Contact</Link>
+              <Link href="/privacy" className="text-xs text-white/15 hover:text-white/30 transition-colors">Privacy</Link>
+              <Link href="/contact" className="text-xs text-white/15 hover:text-white/30 transition-colors">Contact</Link>
             </div>
           </div>
         </footer>
